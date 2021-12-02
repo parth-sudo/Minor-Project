@@ -1,0 +1,20 @@
+{% extends "backend/base.html" %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+
+<h1 style = "text-align:center;"> Student View. </h1>
+
+<h2 style="color: goldenrod; align-items: center;"> Check your result </h2>
+
+<div style="text-align:center"> 
+    <form method = "POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p> Enter roll number and upload your answer sheet.</p>
+        <input type="text" name="roll_number" placeholder="Enter Roll Number">
+        <input type="file" name="answer_sheet">
+        <button type="submit"> Check result </button>
+    </form>
+</div>
+
+{% endblock %}

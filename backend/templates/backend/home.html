@@ -1,0 +1,55 @@
+{% extends "backend/base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <!-- Content here -->
+    <div style="text-align:center;"> 
+    <h2> Welcome </h2>
+    <h3> Are you a - </h3>
+    </div>
+
+    <table class="table">
+        <thead>
+          <tr >
+            <th scope="col">Teacher</th>
+            <th scope="col">Student</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+
+            <td> 
+
+                <div class="card" style="width: 18rem; text-align: center;">
+                    <img src="https://t3.ftcdn.net/jpg/02/78/72/38/360_F_278723805_fLfr5BAI2gcaHUsdKO2icbDqiTF685Se.jpg" class="card-img-top" alt="blackboard">
+                    <div class="card-body">
+                      <p class="card-text">Click below if you are a teacher.</p>
+                      <a href="{% url 'teacher_view' %}"> <button class="btn btn-warning"> Teacher View </button> </a>  
+                    </div>
+                  </div>
+
+            </td>
+            <td>  
+            
+            <div class="card" style="width: 18rem; text-align: center;">
+                <img src="https://us.123rf.com/450wm/clairev/clairev1507/clairev150700039/42689046-classroom-theme-image-1-vector-illustration-.jpg?ver=6" class="card-img-top" alt="benches">
+                <div class="card-body">
+                <p class="card-text">Click below if you are a student.</p>
+                <a href="{% url 'student_view' %}"> <button class="btn btn-info"> Student View </button> </a>
+                </div>
+            </div>
+            
+            </td>
+          </tr>
+         
+        </tbody>
+      </table>
+
+
+
+
+</div>
+ 
+    
+{% endblock %}

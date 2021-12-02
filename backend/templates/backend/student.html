@@ -1,0 +1,22 @@
+{% extends "backend/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div style="text-align: center">
+<h1 class="page-header"> Student View. </h1>
+
+<h2 style="color: purple; align-items: center;"> Enter your details to Register </h2>
+<p> Note: If you have already registered, click <a href = "{% url 'student_result' %}"> here </a> to view results. </p>
+<hr>
+<form method = "POST" enctype=multipart/form-data> 
+    {% csrf_token %}
+    <h4> 
+        {{form|crispy}}
+    </h4>
+    <div class="form-group">
+     <a href ="{% url 'student_result' %}"> <button class="btn btn-primary" type="submit">Check results </button> </a> 
+    </div>
+</form>
+</div>
+
+{% endblock %}
