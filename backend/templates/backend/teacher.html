@@ -1,8 +1,25 @@
 {% extends "backend/base.html" %}
-
+{% load crispy_forms_tags %}
 {% block content %}
 
-<h1> Teacher View. </h1>
+<div class="container" style="text-align:center;">
+    
+<h2 style="color: purple; align-items: center;"> Enter your details to Register as a teacher </h2>
+<p> Note: If you have already registered, click <a href = "{% url 'evaluation' %}"> here </a> to evaluate results. </p>
+<p> Email is optional</p>
+<hr>
+<form method = "POST" enctype=multipart/form-data> 
+    {% csrf_token %}
+    <h4> 
+        {{form|crispy}} 
+    </h4>
+    <div class="form-group">
+     <a href ="{% url 'evaluation' %}"> <button class="btn btn-primary" type="submit">Evaluate results </button> </a> 
+    </div>
+</form>
+</div>
+    
+</div>
 
-<a href="{% url 'teacher_form' %}">  <button type="submit" class="btn btn-success">Sign Up</button> </a> 
+
 {% endblock %}

@@ -1,8 +1,9 @@
+from django.http.response import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views import generic
 from .models import Teacher, Student
-from .forms import StudentForm
+from .forms import StudentForm, TeacherForm
 import io
 import PyPDF2
 
@@ -22,8 +23,8 @@ def student_view(request):
             answer_sheet = form.cleaned_data.get('answer_sheet')
 
             lenn = len(enrollment_number)
-            # if(lenn < 11):
-            #     return HttpResponse("Invalid enrollment_number, try again")
+            if(lenn < 11):
+                return HttpResponse("Invalid enrollment_number, try again")
             form.save() 
 
             return redirect("student_result")
@@ -35,12 +36,28 @@ def student_view(request):
         
 
 def teacher_view(request):
-    return render(request, 'backend/teacher.html', {})
+    context = {}
+    if request.method == 'POST':
+        form = TeacherForm(request.POST or None)
+        context['form'] = form
+        if form.is_valid():
+            teacher_id = form.cleaned_data['teacher_id']
+            name = form.cleaned_data['name']
+            subject = form.cleaned_data['subject']
 
-class TeacherCreateView(generic.CreateView):
-    model = Teacher
-    fields = ('name', 'email', 'subject')
-    # template_name = 'backend/teacher.html'
+            for char in teacher_id:
+                if char not in range(0, 10):
+                    return HttpResponseBadRequest("Invalid teacher id, try again.") 
+            if len(teacher_id) < 5:
+                return HttpResponse("Invalid teacher id, try again.")
+            
+            form.save()
+            return redirect("evaluation")
+    else:
+        form = TeacherForm()
+        context['form'] = form
+
+    return render(request, 'backend/teacher.html', context)
 
 def student_result(request):
     if request.method == 'POST':
@@ -50,7 +67,7 @@ def student_result(request):
         if not enroll.exists():
             return HttpResponse("No student with that roll number found.")
         
-        pdfFileObj = request.FILES['answer_sheet'].read() 
+        pdfFileObj = answer_sheet.read() 
         pdfReader = PyPDF2.PdfFileReader(io.BytesIO(pdfFileObj))
         NumPages = pdfReader.numPages
         i = 0
@@ -66,3 +83,5 @@ def student_result(request):
     return render(request, 'backend/student_result.html', {})
 
 
+def evaluation(request):
+    return render(request, 'backend/evaluation.html', {})

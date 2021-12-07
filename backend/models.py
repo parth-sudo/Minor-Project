@@ -8,6 +8,7 @@ class Subject(models.Model):
         return self.name
 
 class Teacher(models.Model):
+    teacher_id = models.CharField(max_length = 10, unique=True, blank = False)
     name = models.CharField(max_length=30, blank=False)
     email = models.EmailField(blank=True)
     subject = models.OneToOneField(Subject, on_delete=models.CASCADE)
