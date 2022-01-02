@@ -4,8 +4,8 @@
 
 <div class="container" style="text-align:center;">
     
-<h2 style="color: purple; align-items: center;"> Enter your details to Register as a teacher </h2>
-<p> Note: If you have already registered, click <a href = "{% url 'evaluation' %}"> here </a> to evaluate results. </p>
+<h2 style="color: goldenrod; align-items: center;"> Enter your details to register as a teacher. </h2>
+<p> Note: If you have already registered, click <a href = "{% url 'teacher_entry' %}"> here </a> to evaluate results. </p>
 <p> Email is optional</p>
 <hr>
 <form method = "POST" enctype=multipart/form-data> 
@@ -14,10 +14,11 @@
         {{form|crispy}} 
     </h4>
     <div class="form-group">
-     <a href ="{% url 'evaluation' %}"> <button class="btn btn-primary" type="submit">Evaluate results </button> </a> 
+     <a href ="{% url 'teacher_entry' %}"> <button class="btn btn-primary" type="submit">Evaluate results </button> </a> 
     </div>
 </form>
-</div>
+<br>
+<a href="{% url 'home' %}"> <button class="btn btn-dark"> Homepage </button></a> 
     
 </div>
 

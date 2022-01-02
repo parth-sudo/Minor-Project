@@ -1,0 +1,20 @@
+{% extends "backend/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h1 style="color:rgb(77, 53, 18); text-align:center"> Teacher View. </h1>
+
+<div class="container" style="text-align:center"> 
+
+   <div style="text-align:center"> 
+        <form method = "POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p> Enter teacher id to proceed for evaluation.</p>
+            <input type="number" name="teacherID" placeholder="Enter teacher ID">
+            <button type="submit"> Click to proceed </button>
+        </form>
+    </div>
+  
+</div>
+
+{% endblock %}

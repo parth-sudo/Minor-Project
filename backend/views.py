@@ -6,6 +6,10 @@ from .models import Teacher, Student
 from .forms import StudentForm, TeacherForm
 import io
 import PyPDF2
+import easyocr
+import cv2
+from matplotlib import pyplot as plt
+import numpy as np
 
 # Create your views here.
 def home(request):
@@ -45,19 +49,20 @@ def teacher_view(request):
             name = form.cleaned_data['name']
             subject = form.cleaned_data['subject']
 
-            for char in teacher_id:
-                if char not in range(0, 10):
+            for num in teacher_id:
+                if num not in range(0, 10):
                     return HttpResponseBadRequest("Invalid teacher id, try again.") 
             if len(teacher_id) < 5:
-                return HttpResponse("Invalid teacher id, try again.")
+                return HttpResponseBadRequest("Invalid teacher id, try again.")
             
             form.save()
-            return redirect("evaluation")
+            return redirect("teacher_entry")
     else:
         form = TeacherForm()
         context['form'] = form
 
     return render(request, 'backend/teacher.html', context)
+
 
 def student_result(request):
     if request.method == 'POST':
@@ -67,6 +72,7 @@ def student_result(request):
         if not enroll.exists():
             return HttpResponse("No student with that roll number found.")
         
+        # demo logic for retreiving strings from ml model.
         pdfFileObj = answer_sheet.read() 
         pdfReader = PyPDF2.PdfFileReader(io.BytesIO(pdfFileObj))
         NumPages = pdfReader.numPages
@@ -83,5 +89,36 @@ def student_result(request):
     return render(request, 'backend/student_result.html', {})
 
 
-def evaluation(request):
-    return render(request, 'backend/evaluation.html', {})
+def teacher_entry(request):
+    if request.method == 'POST':
+        id = request.POST['teacherID']
+        teacher = Teacher.objects.filter(teacher_id = id)
+        # print(type(teacher_id))
+
+        if not teacher.exists():
+            return HttpResponse("No Teacher with that teacher ID found.")
+        
+        return redirect(f"evaluate_result/{id}")
+
+    return render(request, 'backend/teacher_entry.html', {})
+
+
+def evaluate_result(request, teacher_id):
+    # print(teacher_id)
+    context = {}
+    teacher = Teacher.objects.get(teacher_id=teacher_id)
+    context['teacher_id'] = teacher_id
+    context['teacher'] = teacher
+
+    answer_key = request.FILES.get('answer_key')
+    IMAGE_PATH = 'D:/Projects/minorProject/media/sample.png'
+    #IMAGE_PATH = 'surf.jpeg'
+
+    reader = easyocr.Reader(['en'])
+    result = reader.readtext(IMAGE_PATH)
+    #print(result)
+    res=[lis[1] for lis in result]
+    print(res)
+    context['temp_image_text'] = res
+    
+    return render(request, 'backend/evaluate_result.html', context)
