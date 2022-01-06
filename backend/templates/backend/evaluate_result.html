@@ -10,16 +10,30 @@
 
     <hr> 
     <h4> Upload your answer key here. </h4>
+    <hr>
 
-    <label for="myfile">Select a file:</label>
-    <input type="file" name="answer_key">
+    <form method = "POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p> Upload answer key. </p>
+        <input type="file" name="teacher_key">
+        <br>
+        <p> Enter roll number and upload student's answer sheet.</p>
+        <input type="text" name="roll_number" placeholder="Enter Roll Number">
+        <input type="file" name="student_sheet">
+        <button type="submit"> Check result </button>
+    </form>
+
     <!-- <button type="submit"> Evaluate </button> -->
 
-    <a href="teacherForm/evaluate_result/{{teacher_id}}"> Evaluate </a>
+    <a href="{% url 'evaluate' teacher_id %}"> Evaluate </a>
     
     <div> 
 
-        <p>  {{temp_image_text}} </p>
+        <p>  {{teacher_string}} </p>
+        <br> 
+        <p> {{student_string}} </p>
+
+        <p> finally percentage of student is - {{percentage}}</p>
 
     </div>
   

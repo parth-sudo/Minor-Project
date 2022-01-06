@@ -10,6 +10,7 @@ import easyocr
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 def home(request):
@@ -49,11 +50,11 @@ def teacher_view(request):
             name = form.cleaned_data['name']
             subject = form.cleaned_data['subject']
 
-            for num in teacher_id:
-                if num not in range(0, 10):
-                    return HttpResponseBadRequest("Invalid teacher id, try again.") 
-            if len(teacher_id) < 5:
-                return HttpResponseBadRequest("Invalid teacher id, try again.")
+            # for num in teacher_id:
+            #     if num not in range(0, 10):
+            #         return HttpResponseBadRequest("Invalid teacher id, try again.") 
+            # if len(teacher_id) < 5:
+            #     return HttpResponseBadRequest("Invalid teacher id, try again.")
             
             form.save()
             return redirect("teacher_entry")
@@ -102,6 +103,57 @@ def teacher_entry(request):
 
     return render(request, 'backend/teacher_entry.html', {})
 
+#utility function.
+def converter(key):
+    IMAGE_PATH = f"media/{key}"
+
+    reader = easyocr.Reader(['en'])
+    result = reader.readtext(IMAGE_PATH)
+    #print(result)
+    res=[lis[1] for lis in result]
+    return res
+
+#utility function.
+def percentage_calculator(raw_teacher_string, raw_student_string):
+
+    teacher_word_list = [sub.split() for sub in raw_teacher_string]
+    student_word_list = [sub.split() for sub in raw_student_string]
+
+    print(teacher_word_list)
+
+    unwanted = ['the', 'is', 'was', '.', ',', ':', 'for']
+
+    teacher_dict = {}
+    student_dict = {}
+
+    for lis in teacher_word_list:
+        for word in lis:
+            if word not in unwanted: 
+                if (word in teacher_dict):
+                    teacher_dict[word] += 1
+                else:
+                    teacher_dict[word] = 1
+
+    for lis in student_word_list:
+        for word in lis:
+            if word not in unwanted:
+                if (word in student_dict):
+                    student_dict[word] += 1
+                else:
+                    student_dict[word] = 1
+    
+    tsize = len(teacher_dict)
+    ssize = 0
+
+    for word, tfreq in teacher_dict.items():
+        if word in student_dict:
+            sfreq = student_dict[word]
+            if abs(tfreq - sfreq) >= 5:
+                ssize += 1
+    
+    result = ((tsize - ssize)/tsize)*100
+    
+    return result
 
 def evaluate_result(request, teacher_id):
     # print(teacher_id)
@@ -110,15 +162,26 @@ def evaluate_result(request, teacher_id):
     context['teacher_id'] = teacher_id
     context['teacher'] = teacher
 
-    answer_key = request.FILES.get('answer_key')
-    IMAGE_PATH = 'D:/Projects/minorProject/media/sample.png'
-    #IMAGE_PATH = 'surf.jpeg'
+    if request.method == 'POST':
+        teacher_key = request.FILES['teacher_key']
+        student_sheet = request.FILES['student_sheet']
+        student_roll = request.POST['roll_number']
 
-    reader = easyocr.Reader(['en'])
-    result = reader.readtext(IMAGE_PATH)
-    #print(result)
-    res=[lis[1] for lis in result]
-    print(res)
-    context['temp_image_text'] = res
+        # print(teacher_key.name)
+        # print(student_sheet.name)
+
+        # answer_key = request.FILES.get('answer_key')
+        fs = FileSystemStorage()
+        fs.save(teacher_key.name, teacher_key)
+        fs.save(student_sheet.name, student_sheet)
+
+        teacher_string = converter(teacher_key.name)
+        student_string = converter(student_sheet.name)
+
+        context['teacher_string'] = teacher_string
+        context['student_string'] = student_string
+
+        percentage = percentage_calculator(teacher_string, student_string)
+        context['percentage'] = percentage
     
     return render(request, 'backend/evaluate_result.html', context)
