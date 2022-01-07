@@ -12,7 +12,7 @@
     <h4> Upload your answer key here. </h4>
     <hr>
 
-    <form method = "POST" enctype="multipart/form-data">
+    <form action = "{% url 'final_result' teacher.teacher_id %}" method = "POST" enctype="multipart/form-data">
         {% csrf_token %}
         <p> Upload answer key. </p>
         <input type="file" name="teacher_key">
@@ -33,7 +33,8 @@
         <br> 
         <p> {{student_string}} </p>
 
-        <p> finally percentage of student is - {{percentage}}</p>
+        <p> Reload the page to see the Percentage below - </p>
+        <p> {{percentage}} </p>
 
     </div>
   

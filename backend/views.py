@@ -2,7 +2,7 @@ from django.http.response import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views import generic
-from .models import Teacher, Student
+from .models import Teacher, Student, Subject
 from .forms import StudentForm, TeacherForm
 import io
 import PyPDF2
@@ -163,6 +163,7 @@ def evaluate_result(request, teacher_id):
     context['teacher'] = teacher
 
     if request.method == 'POST':
+
         teacher_key = request.FILES['teacher_key']
         student_sheet = request.FILES['student_sheet']
         student_roll = request.POST['roll_number']
@@ -183,5 +184,12 @@ def evaluate_result(request, teacher_id):
 
         percentage = percentage_calculator(teacher_string, student_string)
         context['percentage'] = percentage
+
+        student = Student.objects.get(enrollment_number = student_roll)
+        subject = Subject.objects.get(name = teacher.subject)
+        context['student'] = student
+        context['subject_id'] = subject.id
+
+        return render(request, 'backend/final_result.html', context)
     
     return render(request, 'backend/evaluate_result.html', context)

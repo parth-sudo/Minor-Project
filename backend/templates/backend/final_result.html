@@ -1,0 +1,15 @@
+{% extends "backend/base.html" %}
+
+{% block content %}
+
+<div style="text-align:center;"> 
+
+<h2> Subject - {{teacher.subject}} </h2>
+
+<h4> Student Name - {{student.full_name}} </h4>
+<h3> Student Enrollment Number - {{student.enrollment_number}} </h3>
+<h3> Percentage scored in english - {{percentage}}% </h3>
+
+</div>
+
+{% endblock %}
