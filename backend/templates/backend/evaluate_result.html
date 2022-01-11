@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<div style="margin-top:10px; text-align:center;"> 
+<!-- <div style="margin-top:10px; text-align:center;"> 
 
     <h1> Time to evaluate result. </h1>
     <h2> Teacher id is {{teacher_id}} </h2>
@@ -23,7 +23,7 @@
         <button type="submit"> Check result </button>
     </form>
 
-    <!-- <button type="submit"> Evaluate </button> -->
+    <button type="submit"> Evaluate </button> 
 
     <a href="{% url 'evaluate' teacher_id %}"> Evaluate </a>
     
@@ -39,8 +39,60 @@
     </div>
   
     
+</div> -->
+
+<form action = "{% url 'final_result' teacher.teacher_id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+      <h1><strong>Time to evaluate</strong> the result</h1>
+      
+      <div class="form-group">
+        <label for="title">Teacher id is {{ teacher_id }}</label>
+        <h2><strong>Hello</strong> {{ teacher }} </h2>
+      </div>
+      
+      <div class="form-group file-area">
+            <label for="images">Upload answer key </label>
+        <input type="file" name="teacher_key" id="images"/>
+        <div class="file-dummy">
+        </div>
+      </div>
+      
+      <div class="form-group file-area">
+            <label for="images">Enter roll number and upload student's answer sheet</label>
+              <input type="text" name="roll_number" placeholder="Enter Roll Number">
+            <input type="file" name="student_sheet" id="images"/>
+        <div class="file-dummy">
+        </div>
+      </div>
+      
+      <!-- <div class="evaluation">
+          <button><a href="{% url 'evaluate' teacher_id %}"></a> Evaluate</button>
+      </div> -->
+
+      <div class="form-group">
+        <button type="submit">Check Result</button>
+      </div>
+      
+    </form>
     
-</div>
+    
+    <div> 
+
+      <p>  {{teacher_string}} </p>
+      <br> 
+      <p> {{student_string}} </p>
+
+      <p> Reload the page to see the Percentage below - </p>
+      <p> {{percentage}} </p>
+
+  </div>
+    
+    
+    
+    <link href='https://fonts.googleapis.com/css?family=Lato:100,200,300,400,500,600,700' rel='stylesheet' type='text/css'>
+    
+    <a href="http://scribblerockerz.com/drag-n-drop-file-input-without-javascript/" class="back-to-article" target="_blank"></a>
+
 
 
 {% endblock %}

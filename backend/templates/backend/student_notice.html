@@ -1,0 +1,17 @@
+{% extends "backend/base.html" %}
+{% load static %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<h1 style = "text-align:center;"> Student View. </h1>
+
+<h2 style = "text-align:center;"> Student Name - {{student.full_name}} </h2>
+
+<div>
+ {% for obj in queryset %}
+    <p> Subject - {{obj.subject}} </p>
+    <p> Percentage - {{obj.percentage}}% </p>
+ {% endfor %}
+</div>
+
+{% endblock %}

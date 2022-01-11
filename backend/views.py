@@ -2,7 +2,7 @@ from django.http.response import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views import generic
-from .models import Teacher, Student, Subject
+from .models import Teacher, Student, Subject, Marks
 from .forms import StudentForm, TeacherForm
 import io
 import PyPDF2
@@ -64,28 +64,25 @@ def teacher_view(request):
 
     return render(request, 'backend/teacher.html', context)
 
-
+# todo 
 def student_result(request):
     if request.method == 'POST':
-        answer_sheet = request.FILES['answer_sheet']
+        # answer_sheet = request.FILES['answer_sheet']
         roll = request.POST['roll_number']
         enroll = Student.objects.all().filter(enrollment_number = roll)
         if not enroll.exists():
             return HttpResponse("No student with that roll number found.")
         
-        # demo logic for retreiving strings from ml model.
-        pdfFileObj = answer_sheet.read() 
-        pdfReader = PyPDF2.PdfFileReader(io.BytesIO(pdfFileObj))
-        NumPages = pdfReader.numPages
-        i = 0
-        content = []
-        while (i<NumPages):
-            text = pdfReader.getPage(i)
-            content.append(text.extractText())
-            i += 1
-        print(content)
+        # todo
+        student = Student.objects.get(enrollment_number = roll)
+        queryset = Marks.objects.filter(student_roll_number = roll)
 
-        return redirect('home')
+        context = {}
+        context['queryset'] = queryset
+        print(queryset)
+        context['student'] = student
+
+        return render(request, 'backend/student_notice.html', context)
         
     return render(request, 'backend/student_result.html', {})
 
@@ -190,6 +187,14 @@ def evaluate_result(request, teacher_id):
         context['student'] = student
         context['subject_id'] = subject.id
 
+        marked_guy_obj = Marks(student_roll_number=student_roll, subject=subject.name, percentage=int(percentage))
+        marked_guy_obj.save()
+
+        print(marked_guy_obj)
+
         return render(request, 'backend/final_result.html', context)
+    else:
+        if request.method == 'GET':
+            return render(request, 'backend/evaluate_result.html', context)
     
     return render(request, 'backend/evaluate_result.html', context)

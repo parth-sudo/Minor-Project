@@ -10,9 +10,9 @@
 <div style="text-align:center"> 
     <form method = "POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <p> Enter roll number and upload your answer sheet.</p>
+        <p> Enter roll number to see your marks of all the subjects that are marked.</p>
         <input type="text" name="roll_number" placeholder="Enter Roll Number">
-        <input type="file" name="answer_sheet">
+        <!-- <input type="file" name="answer_sheet"> -->
         <button type="submit"> Check result </button>
     </form>
 </div>

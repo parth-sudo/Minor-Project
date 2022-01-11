@@ -26,4 +26,12 @@ class Teacher(models.Model):
     def __str__(self):
         return self.name
 
+class Marks(models.Model):
+    student_roll_number = models.CharField(max_length=11)
+    subject = models.CharField(max_length=30)
+    percentage = models.IntegerField()
+
+    def __str__(self):
+        return self.student_roll_number
+
 
